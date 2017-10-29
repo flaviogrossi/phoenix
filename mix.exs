@@ -17,7 +17,7 @@ defmodule Phoenix.Mixfile do
       # Phoenix.Param, we need to disable consolidation
       # for the test environment for Elixir v1.2 onward.
       consolidate_protocols: Mix.env != :test,
-      xref: [exclude: [Ecto.Type]],
+      xref: [exclude: [Ecto.Type, :cowboy_websocket_handler, :cowboy_req]],
 
       name: "Phoenix",
       docs: [
@@ -59,12 +59,12 @@ defmodule Phoenix.Mixfile do
   defp deps do
     cowboy_version =
       case System.get_env("COWBOY_VERSION") do
-        "1" <> _ -> "~> 1.0"
-        _ -> "~> 2.0"
+        "1" <> _ -> {:cowboy, "~> 1.0", optional: true}
+        _ -> {:cowboy, github: "ninenines/cowboy", optional: true, override: true}
       end
 
     [
-      {:cowboy, cowboy_version, optional: true},
+      cowboy_version,
       {:plug, github: "elixir-plug/plug", override: true},
       {:phoenix_pubsub, "~> 1.0"},
       {:poison, "~> 2.2 or ~> 3.0"},

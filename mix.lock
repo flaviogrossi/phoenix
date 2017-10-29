@@ -1,5 +1,5 @@
-%{"cowboy": {:hex, :cowboy, "2.0.0", "a3b680bcc1156c6fbcb398cc56adc35177037012d7dc28d8f7e7926d6c243561", [:rebar3], [{:cowlib, "~> 2.0.0", [repo: "hexpm", hex: :cowlib, optional: false]}, {:ranch, "~> 1.4.0", [repo: "hexpm", hex: :ranch, optional: false]}], "hexpm"},
-  "cowlib": {:hex, :cowlib, "2.0.0", "c2977105473dfd520ec158edb7fda1aeb3efa323192dd4533481da0ae32950d4", [:rebar3], [], "hexpm"},
+%{"cowboy": {:git, "https://github.com/ninenines/cowboy.git", "f3d6b05b863fe177a34a8a6ba48c5f263ef8cf82", []},
+  "cowlib": {:git, "https://github.com/ninenines/cowlib", "bd37be4d3b065600c3b76b492535e76e5d413fc1", [ref: "2.0.0"]},
   "earmark": {:hex, :earmark, "1.2.3", "206eb2e2ac1a794aa5256f3982de7a76bf4579ff91cb28d0e17ea2c9491e46a4", [:mix], []},
   "ex_doc": {:hex, :ex_doc, "0.18.1", "37c69d2ef62f24928c1f4fdc7c724ea04aecfdf500c4329185f8e3649c915baf", [:mix], [{:earmark, "~> 1.1", [hex: :earmark, optional: false]}]},
   "gettext": {:hex, :gettext, "0.13.1", "5e0daf4e7636d771c4c71ad5f3f53ba09a9ae5c250e1ab9c42ba9edccc476263", [:mix], []},
@@ -8,7 +8,7 @@
   "phoenix_guides": {:git, "https://github.com/phoenixframework/phoenix_guides.git", "cc1899054e31704f1ae92645d4b0534e6aac407e", []},
   "phoenix_html": {:hex, :phoenix_html, "2.10.4", "d4f99c32d5dc4918b531fdf163e1fd7cf20acdd7703f16f5d02d4db36de803b7", [:mix], [{:plug, "~> 1.0", [hex: :plug, optional: false]}]},
   "phoenix_pubsub": {:hex, :phoenix_pubsub, "1.0.2", "bfa7fd52788b5eaa09cb51ff9fcad1d9edfeb68251add458523f839392f034c1", [:mix], []},
-  "plug": {:git, "https://github.com/elixir-plug/plug.git", "2fa4da127c1bb0aad2063fbcaee0a9d88644d9c4", []},
+  "plug": {:git, "https://github.com/elixir-plug/plug.git", "3575726336f919ace3da619aad06db3c80242d26", []},
   "poison": {:hex, :poison, "3.1.0", "d9eb636610e096f86f25d9a46f35a9facac35609a7591b3be3326e99a0484665", [:mix], []},
-  "ranch": {:hex, :ranch, "1.4.0", "10272f95da79340fa7e8774ba7930b901713d272905d0012b06ca6d994f8826b", [:rebar3], [], "hexpm"},
+  "ranch": {:git, "https://github.com/ninenines/ranch", "55c2a9d623454f372a15e99721a37093d8773b48", [ref: "1.4.0"]},
   "websocket_client": {:git, "https://github.com/jeremyong/websocket_client.git", "9a6f65d05ebf2725d62fb19262b21f1805a59fbf", []}}

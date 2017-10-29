@@ -32,6 +32,7 @@ defmodule Phoenix.Endpoint.Handler do
           config = endpoint.config(scheme) do
         handler.child_spec(scheme, endpoint, default(config, otp_app, port))
       end
+
     supervise(children, strategy: :one_for_one)
   end
 
