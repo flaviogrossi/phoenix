@@ -7,57 +7,19 @@ defmodule Phoenix.Endpoint.Cowboy2WebSocket do
   @already_sent {:plug_conn, :sent}
 
   def init(req, {module, opts}) do
-    # Is this too brittle?
     conn = @connection.conn(req)
-    case module.init(conn, opts) do
-      {:ok, _, _} ->
-        {_, socket, _} = opts
-        %{websocket: {_, config}} = socket.__transports__
-        timeout = Keyword.fetch!(config, :timeout)
-        {:cowboy_websocket, req, {module, req, opts}, %{idle_timeout: timeout}}
-      {:error, %{adapter: {@connection, req}}} ->
-        {:error, req}
-    end
-  end
-
-  def resume(module, fun, args) do
-    try do
-      apply(module, fun, args)
-    catch
-      kind, [{:reason, reason}, {:mfa, _mfa}, {:stacktrace, stack} | _rest] ->
-        reason = format_reason(kind, reason, stack)
-        exit({reason, {__MODULE__, :resume, []}})
-    else
-      {:suspend, module, fun, args} ->
-        {:suspend, __MODULE__, :resume, [module, fun, args]}
-      _ ->
-        # We are forcing a shutdown exit because we want to make
-        # sure all transports exits with reason shutdown to guarantee
-        # all channels are closed.
-        exit(:shutdown)
-    end
-  end
-
-  defp format_reason(:exit, reason, _), do: reason
-  defp format_reason(:throw, reason, stack), do: {{:nocatch, reason}, stack}
-  defp format_reason(:error, reason, stack), do: {reason, stack}
-
-  ## Websocket callbacks
-
-  def websocket_init({module, req, opts}) do
-    conn = @connection.conn(req)
+    opts = Tuple.append(opts, req.pid)
     try do
       case module.init(conn, opts) do
-        {:ok, %{adapter: {@connection, _}}, {_handler, args}} ->
-          {:ok, state, _timeout} = module.ws_init(args)
-          {:ok, {module, state}}
+        {:ok, %{adapter: {@connection, req}}, {_module, {_socket, opts} = args}} ->
+          timeout = Keyword.fetch!(opts, :timeout)
+          {:cowboy_websocket, req, {module, args}, %{idle_timeout: timeout}}
+        {:error, %{adapter: {@connection, req}}} ->
+          {:error, req}
       end
     catch
-      kind, reason ->
-        # Although we are not performing a call, we are using the call
-        # function for now so it is properly handled in error reports.
-        mfa = {module, :call, [conn, opts]}
-      {__MODULE__, req, {:error, mfa, kind, reason, System.stacktrace}}
+      _kind, _reason ->
+        {:error, req}
     after
       receive do
         @already_sent -> :ok
@@ -65,6 +27,13 @@ defmodule Phoenix.Endpoint.Cowboy2WebSocket do
         0 -> :ok
       end
     end
+  end
+
+  ## Websocket callbacks
+
+  def websocket_init({module, args}) do
+    {:ok, state, _timeout} = module.ws_init(args)
+    {:ok, {module, state}}
   end
 
   def websocket_handle({opcode = :text, payload}, {handler, state}) do
@@ -99,7 +68,7 @@ defmodule Phoenix.Endpoint.Cowboy2WebSocket do
     :ok
   end
   def terminate(reason, _req, {handler, state}) do
-    handler.ws_close(state) # do we want to do this?
+    handler.ws_close(state)
     handler.ws_terminate(reason, state)
     :ok
   end
